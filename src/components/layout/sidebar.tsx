@@ -11,7 +11,8 @@ import {
   FolderTree,
   ActivitySquare,
   Settings,
-  TerminalSquare
+  TerminalSquare,
+  Users
 } from "lucide-react";
 import {
   Sidebar,
@@ -57,6 +58,12 @@ const navItems = [
     icon: ActivitySquare,
     minRole: "ADMIN",
   },
+  {
+    title: "Users",
+    url: "/users",
+    icon: Users,
+    minRole: "ADMIN",
+  },
 ];
 
 export function AppSidebar() {
@@ -80,7 +87,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => {
-                if (!hasRole(item.minRole as any)) return null;
+                if (!hasRole(item.minRole as import("@/types/auth").UserRole)) return null;
                 
                 const isActive = pathname === item.url || pathname.startsWith(`${item.url}/`);
                 
