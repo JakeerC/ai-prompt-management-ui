@@ -11,9 +11,9 @@ import {
   FolderTree,
   ActivitySquare,
   Settings,
-  TerminalSquare,
   Users
 } from "lucide-react";
+import { Logo } from "@/components/ui/logo";
 import {
   Sidebar,
   SidebarContent,
@@ -74,9 +74,7 @@ export function AppSidebar() {
     <Sidebar variant="inset" className="border-r glass">
       <SidebarHeader className="h-16 flex items-center justify-center border-b border-border/50">
         <div className="flex items-center gap-2 px-4 w-full">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white shadow-lg">
-            <TerminalSquare className="w-5 h-5" />
-          </div>
+          <Logo className="w-8 h-8 shadow-lg" />
           <span className="font-bold tracking-wide">PM Platform</span>
         </div>
       </SidebarHeader>

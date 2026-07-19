@@ -8,8 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { TerminalSquare } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Logo } from "@/components/ui/logo";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
@@ -47,9 +47,7 @@ export default function SignupPage() {
   return (
     <Card className="w-full max-w-md glass border-border/50 shadow-2xl">
       <CardHeader className="space-y-3 items-center text-center">
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white shadow-lg mb-2">
-          <TerminalSquare className="w-7 h-7" />
-        </div>
+        <Logo className="w-12 h-12 shadow-lg mb-2" />
         <CardTitle className="text-2xl font-bold tracking-tight">Create an account</CardTitle>
         <CardDescription>
           Enter your details to get started

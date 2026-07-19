@@ -52,11 +52,18 @@ class ApiClient {
       return {} as T;
     }
 
-    const json: ApiResponse<T> = await response.json();
-    if (!json.success && json.message) {
-      throw new ApiError(json.message, response.status);
+    const json = await response.json();
+    
+    // Check if the response matches our generic ApiResponse wrapper structure
+    if (json && typeof json === 'object' && 'success' in json && 'data' in json) {
+      if (!json.success && json.message) {
+        throw new ApiError(json.message, response.status);
+      }
+      return json.data as T;
     }
-    return json.data;
+
+    // If it's not wrapped in our standard ApiResponse, return the JSON directly
+    return json as T;
   }
 
   async get<T>(path: string, params?: Record<string, unknown>): Promise<T> {
