@@ -4,10 +4,21 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { ShieldAlert, Users, ChevronLeft, ChevronRight, ChevronsLeft, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
 import { usersApi } from "@/lib/api/users";
-import { ROLE_LABELS } from "@/types/auth";
+import { ROLE_LABELS, type UserRole } from "@/types/auth";
 import type { UserDto } from "@/types/user";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 import {
   Table,
@@ -28,6 +39,77 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
+function ChangeRoleDialog({
+  user,
+  onUpdateRole,
+  isUpdating,
+}: {
+  user: UserDto;
+  onUpdateRole: (userId: string, role: string) => void;
+  isUpdating: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(user.role);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onUpdateRole(user.id, selectedRole);
+    setOpen(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm" className="h-8">
+          {ROLE_LABELS[user.role as UserRole] || user.role}
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <form onSubmit={handleSubmit}>
+          <DialogHeader>
+            <DialogTitle>Change User Role</DialogTitle>
+            <DialogDescription>
+              Update the access level for {user.email}.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-6 space-y-4">
+            <Select
+              value={selectedRole}
+              onValueChange={(val) => setSelectedRole(val as UserRole)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select role" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(ROLE_LABELS).map(([roleKey, label]) => (
+                  <SelectItem key={roleKey} value={roleKey}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              disabled={isUpdating || selectedRole === user.role}
+            >
+              {isUpdating ? "Saving..." : "Save Changes"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export default function UsersPage() {
   const { hasRole, loading: authLoading } = useAuth();
   const queryClient = useQueryClient();
@@ -46,9 +128,13 @@ export default function UsersPage() {
   const updateRoleMutation = useMutation({
     mutationFn: ({ userId, role }: { userId: string; role: string }) =>
       usersApi.updateRole(userId, role),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+      toast.success(`Role successfully updated to ${ROLE_LABELS[variables.role as UserRole] || variables.role}`);
     },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to update user role");
+    }
   });
 
   if (authLoading) {
@@ -147,22 +233,11 @@ export default function UsersPage() {
                     <TableRow key={user.id}>
                       <TableCell className="font-medium">{user.email}</TableCell>
                       <TableCell>
-                        <Select
-                          defaultValue={user.role}
-                          onValueChange={(val) => handleRoleChange(user.id, val)}
-                          disabled={updateRoleMutation.isPending && updateRoleMutation.variables?.userId === user.id}
-                        >
-                          <SelectTrigger className="w-[140px] h-8">
-                            <SelectValue placeholder="Select role" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {Object.entries(ROLE_LABELS).map(([roleKey, label]) => (
-                              <SelectItem key={roleKey} value={roleKey}>
-                                {label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <ChangeRoleDialog
+                          user={user}
+                          onUpdateRole={handleRoleChange}
+                          isUpdating={updateRoleMutation.isPending && updateRoleMutation.variables?.userId === user.id}
+                        />
                       </TableCell>
                       <TableCell className="text-muted-foreground">
                         {user.createdAt ? format(new Date(user.createdAt), "MMM d, yyyy HH:mm") : "N/A"}
