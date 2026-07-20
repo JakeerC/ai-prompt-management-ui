@@ -8,8 +8,8 @@ import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function TopBar() {
-  const { role } = useAuth();
-  const { isMobile } = useSidebar();
+  useAuth();
+  useSidebar();
 
   return (
     <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-4 border-b bg-background/80 backdrop-blur-xl px-4 md:px-6">

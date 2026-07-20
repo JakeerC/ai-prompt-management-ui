@@ -1,0 +1,12 @@
+#!/bin/sh
+
+echo "🚀 Running pre-push checks (build)..."
+
+if ! npm run build; then
+  echo ""
+  echo "❌ Push aborted: Build failed!"
+  echo "👉 Please fix the build errors above before pushing."
+  exit 1
+fi
+
+echo "✅ All checks passed! Proceeding with push..."

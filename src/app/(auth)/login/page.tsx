@@ -33,8 +33,8 @@ export default function LoginPage() {
       toast.success("Logged in successfully");
       router.push("/");
       router.refresh();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to login");
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : "Failed to login");
     } finally {
       setLoading(false);
     }

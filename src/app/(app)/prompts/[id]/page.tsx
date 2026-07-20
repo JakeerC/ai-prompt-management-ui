@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use } from "react";
 import { usePrompt, useDeletePrompt } from "@/hooks/use-prompts";
 import { useAuditTrail } from "@/hooks/use-audit";
 import { useApprovalHistory } from "@/hooks/use-approvals";
@@ -62,8 +62,8 @@ export default function PromptDetailsPage({ params }: { params: Promise<{ id: st
       await deletePrompt.mutateAsync(id);
       toast.success("Prompt deleted successfully");
       router.push("/prompts");
-    } catch (error: any) {
-      toast.error(error.message || "Failed to delete prompt");
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : "Failed to delete prompt");
     }
   };
 

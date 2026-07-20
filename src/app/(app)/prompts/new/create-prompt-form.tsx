@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useCreatePrompt } from "@/hooks/use-prompts";
 import { useCategories } from "@/hooks/use-categories";
-import { useTags } from "@/hooks/use-tags";
+
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Sparkles, TerminalSquare, Tag as TagIcon, LayoutGrid } from "lucide-react";
+import { Sparkles, TerminalSquare, LayoutGrid } from "lucide-react";
 import type { CreatePromptRequest } from "@/types/prompt";
 
 const promptSchema = z.object({
@@ -73,8 +73,8 @@ export function CreatePromptForm() {
       const result = await createPrompt.mutateAsync(payload);
       toast.success("Prompt created successfully");
       router.push(`/prompts/${result.id}`);
-    } catch (error: any) {
-      toast.error(error.message || "Failed to create prompt");
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : "Failed to create prompt");
     }
   };
 

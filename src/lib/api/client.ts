@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
-import type { ApiResponse } from "@/types/api";
+// import type { ApiResponse } from "@/types/api";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "/api";
 
@@ -23,7 +23,7 @@ class ApiClient {
 
   private async request<T>(
     path: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
   ): Promise<T> {
     const headers = await this.getAuthHeaders();
     const url = `${API_BASE_URL}${path}`;
@@ -43,7 +43,7 @@ class ApiClient {
       throw new ApiError(
         error.detail || error.message || "An error occurred",
         response.status,
-        error
+        error,
       );
     }
 
@@ -53,9 +53,14 @@ class ApiClient {
     }
 
     const json = await response.json();
-    
+
     // Check if the response matches our generic ApiResponse wrapper structure
-    if (json && typeof json === 'object' && 'success' in json && 'data' in json) {
+    if (
+      json &&
+      typeof json === "object" &&
+      "success" in json &&
+      "data" in json
+    ) {
       if (!json.success && json.message) {
         throw new ApiError(json.message, response.status);
       }
@@ -104,7 +109,7 @@ export class ApiError extends Error {
   constructor(
     message: string,
     public status: number,
-    public details?: unknown
+    public details?: unknown,
   ) {
     super(message);
     this.name = "ApiError";

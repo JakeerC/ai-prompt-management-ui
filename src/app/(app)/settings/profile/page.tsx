@@ -45,7 +45,7 @@ export default function ProfilePage() {
     mode: "onChange",
   });
 
-  function onSubmit(data: ProfileFormValues) {
+  function onSubmit() {
     toast.success("Profile updated", {
       description: "Your profile has been updated successfully.",
     });
