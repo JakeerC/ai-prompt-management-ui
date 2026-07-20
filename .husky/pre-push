@@ -1,1 +1,19 @@
-npm run lint && npm run build
+#!/bin/sh
+
+echo "🚀 Running pre-push checks (lint & build)..."
+
+if ! npm run lint; then
+  echo ""
+  echo "❌ Push aborted: Linting failed!"
+  echo "👉 Please fix the ESLint errors above before pushing."
+  exit 1
+fi
+
+if ! npm run build; then
+  echo ""
+  echo "❌ Push aborted: Build failed!"
+  echo "👉 Please fix the build errors above before pushing."
+  exit 1
+fi
+
+echo "✅ All checks passed! Proceeding with push..."
