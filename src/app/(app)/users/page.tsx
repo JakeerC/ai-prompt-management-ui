@@ -59,10 +59,8 @@ function ChangeRoleDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8">
-          {ROLE_LABELS[user.role as UserRole] || user.role}
-        </Button>
+      <DialogTrigger render={<Button variant="outline" size="sm" className="h-8" />}>
+        {ROLE_LABELS[user.role as UserRole] || user.role}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleSubmit}>

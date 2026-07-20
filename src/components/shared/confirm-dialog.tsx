@@ -14,7 +14,7 @@ import {
 import type { ReactNode } from "react";
 
 interface ConfirmDialogProps {
-  trigger: ReactNode;
+  trigger: React.ReactElement;
   title: string;
   description: string;
   confirmText?: string;
@@ -34,7 +34,7 @@ export function ConfirmDialog({
 }: ConfirmDialogProps) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger>{trigger}</AlertDialogTrigger>
+      <AlertDialogTrigger render={trigger} />
       <AlertDialogContent className="glass sm:max-w-[425px]">
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
