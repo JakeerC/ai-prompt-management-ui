@@ -1,0 +1,12 @@
+#!/bin/sh
+
+echo "🚀 Running pre-commit checks (lint-staged)..."
+
+if ! npx lint-staged; then
+  echo ""
+  echo "❌ Commit aborted: Linting failed on staged files!"
+  echo "👉 Please fix the ESLint errors above before committing."
+  exit 1
+fi
+
+echo "✅ All checks passed! Proceeding with commit..."

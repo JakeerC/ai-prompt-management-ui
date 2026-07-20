@@ -37,8 +37,8 @@ export default function SignupPage() {
       
       toast.success("Check your email for the confirmation link");
       router.push("/login");
-    } catch (error: any) {
-      toast.error(error.message || "Failed to sign up");
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : "Failed to sign up");
     } finally {
       setLoading(false);
     }

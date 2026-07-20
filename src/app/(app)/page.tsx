@@ -8,7 +8,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { TerminalSquare, Clock, CheckCircle2, Activity } from "lucide-react";
 
 export default function Dashboard() {
-  const { role } = useAuth();
+  useAuth();
 
   // Fetch recent prompts
   const { data: recentPrompts, isLoading: loadingRecent } = useSearchPrompts({

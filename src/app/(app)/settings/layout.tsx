@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { User, Palette, Shield, Bell } from "lucide-react";
-import { Card } from "@/components/ui/card";
 
 const sidebarNavItems = [
   {

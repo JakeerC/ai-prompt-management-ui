@@ -15,7 +15,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -28,7 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sparkles, TerminalSquare, LayoutGrid } from "lucide-react";
 import type { UpdatePromptRequest } from "@/types/prompt";
 
@@ -110,8 +109,8 @@ export default function EditPromptPage({ params }: { params: Promise<{ id: strin
       await updatePrompt.mutateAsync(payload);
       toast.success("Prompt updated successfully");
       router.push(`/prompts/${id}`);
-    } catch (error: any) {
-      toast.error(error.message || "Failed to update prompt");
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : "Failed to update prompt");
     }
   };
 
