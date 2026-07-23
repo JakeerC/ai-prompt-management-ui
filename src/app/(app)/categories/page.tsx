@@ -29,7 +29,7 @@ export default function CategoriesPage() {
         </RequireRole>
       </div>
 
-      <Card className="glass flex-1">
+      <Card className="glass flex-1 min-w-0">
         <CardHeader>
           <CardTitle>Library Categories</CardTitle>
           <CardDescription>

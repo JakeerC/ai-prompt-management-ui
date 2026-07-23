@@ -128,12 +128,12 @@ export default function PromptDetailsPage({ params }: { params: Promise<{ id: st
       </div>
 
       <Tabs defaultValue="content" className="w-full">
-        <TabsList className="glass grid w-full grid-cols-2 md:grid-cols-5 h-auto rounded-xl p-1 mb-6">
-          <TabsTrigger value="content" className="py-2.5 rounded-lg"><FileText className="w-4 h-4 mr-2" /> Content</TabsTrigger>
-          <TabsTrigger value="versions" className="py-2.5 rounded-lg"><GitMerge className="w-4 h-4 mr-2" /> Versions</TabsTrigger>
-          <TabsTrigger value="approvals" className="py-2.5 rounded-lg"><CheckCircle2 className="w-4 h-4 mr-2" /> Approvals</TabsTrigger>
-          <TabsTrigger value="audit" className="py-2.5 rounded-lg"><ShieldAlert className="w-4 h-4 mr-2" /> Audit Trail</TabsTrigger>
-          <TabsTrigger value="usage" className="py-2.5 rounded-lg"><Activity className="w-4 h-4 mr-2" /> Usage</TabsTrigger>
+        <TabsList className="glass inline-flex flex-wrap h-auto rounded-xl p-1 mb-6 w-full md:w-fit">
+          <TabsTrigger value="content" className="py-2.5 rounded-lg flex-1 md:flex-none px-4"><FileText className="w-4 h-4 mr-2" /> Content</TabsTrigger>
+          <TabsTrigger value="versions" className="py-2.5 rounded-lg flex-1 md:flex-none px-4"><GitMerge className="w-4 h-4 mr-2" /> Versions</TabsTrigger>
+          <TabsTrigger value="approvals" className="py-2.5 rounded-lg flex-1 md:flex-none px-4"><CheckCircle2 className="w-4 h-4 mr-2" /> Approvals</TabsTrigger>
+          <TabsTrigger value="audit" className="py-2.5 rounded-lg flex-1 md:flex-none px-4"><ShieldAlert className="w-4 h-4 mr-2" /> Audit Trail</TabsTrigger>
+          <TabsTrigger value="usage" className="py-2.5 rounded-lg flex-1 md:flex-none px-4"><Activity className="w-4 h-4 mr-2" /> Usage</TabsTrigger>
         </TabsList>
 
         <TabsContent value="content" className="space-y-6 outline-none">
