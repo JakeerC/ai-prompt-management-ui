@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/contexts/auth-context";
 import { QueryProvider } from "@/contexts/query-provider";
 import { Toaster } from "sonner";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -54,6 +55,7 @@ export default function RootLayout({
             </AuthProvider>
           </QueryProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
