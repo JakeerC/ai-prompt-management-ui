@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect } from "react";
+import { use } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { MdxEditor } from "@/components/shared/mdx-editor";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sparkles, TerminalSquare, LayoutGrid } from "lucide-react";
 import type { UpdatePromptRequest } from "@/types/prompt";
@@ -52,6 +53,14 @@ export default function EditPromptPage({ params }: { params: Promise<{ id: strin
   
   const form = useForm<PromptFormValues>({
     resolver: zodResolver(promptSchema),
+    values: prompt ? {
+      name: prompt.name,
+      description: prompt.description || "",
+      content: prompt.content,
+      businessImpact: prompt.businessImpact,
+      categoryId: prompt.category?.id || "",
+      modelHint: prompt.modelHint || "",
+    } : undefined,
     defaultValues: {
       name: "",
       description: "",
@@ -61,19 +70,6 @@ export default function EditPromptPage({ params }: { params: Promise<{ id: strin
       modelHint: "",
     },
   });
-
-  useEffect(() => {
-    if (prompt) {
-      form.reset({
-        name: prompt.name,
-        description: prompt.description || "",
-        content: prompt.content,
-        businessImpact: prompt.businessImpact,
-        categoryId: prompt.category?.id || "",
-        modelHint: prompt.modelHint || "",
-      });
-    }
-  }, [prompt, form]);
 
   if (loadingPrompt) {
     return (
@@ -126,8 +122,9 @@ export default function EditPromptPage({ params }: { params: Promise<{ id: strin
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="grid gap-8 lg:grid-cols-3">
+            {/* Main Content Area - Top Left */}
             <div className="lg:col-span-2 space-y-8">
-              <Card className="glass">
+              <Card className="glass h-full">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <TerminalSquare className="w-5 h-5 text-primary" />
@@ -168,37 +165,11 @@ export default function EditPromptPage({ params }: { params: Promise<{ id: strin
                   />
                 </CardContent>
               </Card>
-
-              <Card className="glass border-primary/20">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-primary" />
-                    Prompt Content
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <FormField
-                    control={form.control}
-                    name="content"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Textarea 
-                            placeholder="You are a helpful assistant..." 
-                            className="min-h-[400px] font-mono text-sm leading-relaxed bg-background/50 resize-y" 
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </CardContent>
-              </Card>
             </div>
 
+            {/* Sidebar Area - Top Right */}
             <div className="space-y-8">
-              <Card className="glass">
+              <Card className="glass h-full">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <LayoutGrid className="w-5 h-5 text-primary" />
@@ -244,11 +215,19 @@ export default function EditPromptPage({ params }: { params: Promise<{ id: strin
                           </FormControl>
                           <SelectContent>
                             <SelectItem value="">None</SelectItem>
-                            {categories?.map((cat) => (
-                              <SelectItem key={cat.id} value={cat.id}>
-                                {cat.name}
-                              </SelectItem>
-                            ))}
+                            {categories ? (
+                              categories.map((cat) => (
+                                <SelectItem key={cat.id} value={cat.id}>
+                                  {cat.name}
+                                </SelectItem>
+                              ))
+                            ) : (
+                              prompt?.category && (
+                                <SelectItem value={prompt.category.id}>
+                                  {prompt.category.name}
+                                </SelectItem>
+                              )
+                            )}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -271,26 +250,54 @@ export default function EditPromptPage({ params }: { params: Promise<{ id: strin
                   />
                 </CardContent>
               </Card>
-
-              <div className="flex gap-4 pt-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full glass"
-                  onClick={() => router.back()}
-                  disabled={updatePrompt.isPending}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-primary to-accent text-white border-0"
-                  disabled={updatePrompt.isPending}
-                >
-                  {updatePrompt.isPending ? "Saving..." : "Save Changes"}
-                </Button>
-              </div>
             </div>
+          </div>
+
+          {/* Full Width Prompt Content */}
+          <Card className="glass border-primary/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-primary" />
+                Prompt Content
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <FormField
+                control={form.control}
+                name="content"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <MdxEditor 
+                        markdown={prompt.content} 
+                        onChange={field.onChange} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Action Buttons */}
+          <div className="flex gap-4 pt-4 justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-32 glass"
+              onClick={() => router.back()}
+              disabled={updatePrompt.isPending}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              className="w-40 bg-gradient-to-r from-primary to-accent text-white border-0"
+              disabled={updatePrompt.isPending}
+            >
+              {updatePrompt.isPending ? "Saving..." : "Save Changes"}
+            </Button>
           </div>
         </form>
       </Form>

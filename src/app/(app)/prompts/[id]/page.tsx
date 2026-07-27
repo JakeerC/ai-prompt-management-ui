@@ -12,6 +12,7 @@ import { DataTable } from "@/components/shared/data-table";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { RequireRole } from "@/components/shared/require-role";
 import { Button } from "@/components/ui/button";
+import { MdxEditor } from "@/components/shared/mdx-editor";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -142,9 +143,7 @@ export default function PromptDetailsPage({ params }: { params: Promise<{ id: st
               <CardTitle className="text-lg">Template Content</CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
-              <pre className="prompt-content bg-muted/20 p-4 rounded-lg border border-border/50 text-sm overflow-x-auto">
-                {prompt.content}
-              </pre>
+              <MdxEditor markdown={prompt.content} readOnly />
             </CardContent>
           </Card>
 
