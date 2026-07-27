@@ -83,9 +83,9 @@ export function CreatePromptForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="grid gap-8 lg:grid-cols-3">
-          {/* Main Content Area */}
+          {/* Main Content Area - Top Left */}
           <div className="lg:col-span-2 space-y-8">
-            <Card className="glass">
+            <Card className="glass h-full">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TerminalSquare className="w-5 h-5 text-primary" />
@@ -132,40 +132,11 @@ export function CreatePromptForm() {
                 />
               </CardContent>
             </Card>
-
-            <Card className="glass border-primary/20">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-primary" />
-                  Prompt Content
-                </CardTitle>
-                <CardDescription>
-                  Write your prompt template. Use {"{{variable}}"} syntax for variables.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <FormField
-                  control={form.control}
-                  name="content"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <MdxEditor 
-                          markdown={field.value || ""} 
-                          onChange={field.onChange} 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </CardContent>
-            </Card>
           </div>
 
-          {/* Sidebar Area */}
+          {/* Sidebar Area - Top Right */}
           <div className="space-y-8">
-            <Card className="glass">
+            <Card className="glass h-full">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <LayoutGrid className="w-5 h-5 text-primary" />
@@ -244,26 +215,57 @@ export function CreatePromptForm() {
                 />
               </CardContent>
             </Card>
-
-            <div className="flex gap-4 pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full glass"
-                onClick={() => router.back()}
-                disabled={createPrompt.isPending}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                className="w-full bg-gradient-to-r from-primary to-accent text-white border-0"
-                disabled={createPrompt.isPending}
-              >
-                {createPrompt.isPending ? "Creating..." : "Create Prompt"}
-              </Button>
-            </div>
           </div>
+        </div>
+
+        {/* Full Width Prompt Content */}
+        <Card className="glass border-primary/20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-primary" />
+              Prompt Content
+            </CardTitle>
+            <CardDescription>
+              Write your prompt template. Use {"{{variable}}"} syntax for variables.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField
+              control={form.control}
+              name="content"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <MdxEditor 
+                      markdown={field.value || ""} 
+                      onChange={field.onChange} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
+
+        {/* Action Buttons */}
+        <div className="flex gap-4 pt-4 justify-end">
+          <Button
+            type="button"
+            variant="outline"
+            className="w-32 glass"
+            onClick={() => router.back()}
+            disabled={createPrompt.isPending}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            className="w-40 bg-gradient-to-r from-primary to-accent text-white border-0"
+            disabled={createPrompt.isPending}
+          >
+            {createPrompt.isPending ? "Creating..." : "Create Prompt"}
+          </Button>
         </div>
       </form>
     </Form>

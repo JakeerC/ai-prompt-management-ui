@@ -122,8 +122,9 @@ export default function EditPromptPage({ params }: { params: Promise<{ id: strin
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="grid gap-8 lg:grid-cols-3">
+            {/* Main Content Area - Top Left */}
             <div className="lg:col-span-2 space-y-8">
-              <Card className="glass">
+              <Card className="glass h-full">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <TerminalSquare className="w-5 h-5 text-primary" />
@@ -164,36 +165,11 @@ export default function EditPromptPage({ params }: { params: Promise<{ id: strin
                   />
                 </CardContent>
               </Card>
-
-              <Card className="glass border-primary/20">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-primary" />
-                    Prompt Content
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <FormField
-                    control={form.control}
-                    name="content"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <MdxEditor 
-                            markdown={prompt.content} 
-                            onChange={field.onChange} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </CardContent>
-              </Card>
             </div>
 
+            {/* Sidebar Area - Top Right */}
             <div className="space-y-8">
-              <Card className="glass">
+              <Card className="glass h-full">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <LayoutGrid className="w-5 h-5 text-primary" />
@@ -266,26 +242,54 @@ export default function EditPromptPage({ params }: { params: Promise<{ id: strin
                   />
                 </CardContent>
               </Card>
-
-              <div className="flex gap-4 pt-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full glass"
-                  onClick={() => router.back()}
-                  disabled={updatePrompt.isPending}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-primary to-accent text-white border-0"
-                  disabled={updatePrompt.isPending}
-                >
-                  {updatePrompt.isPending ? "Saving..." : "Save Changes"}
-                </Button>
-              </div>
             </div>
+          </div>
+
+          {/* Full Width Prompt Content */}
+          <Card className="glass border-primary/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-primary" />
+                Prompt Content
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <FormField
+                control={form.control}
+                name="content"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <MdxEditor 
+                        markdown={prompt.content} 
+                        onChange={field.onChange} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Action Buttons */}
+          <div className="flex gap-4 pt-4 justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-32 glass"
+              onClick={() => router.back()}
+              disabled={updatePrompt.isPending}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              className="w-40 bg-gradient-to-r from-primary to-accent text-white border-0"
+              disabled={updatePrompt.isPending}
+            >
+              {updatePrompt.isPending ? "Saving..." : "Save Changes"}
+            </Button>
           </div>
         </form>
       </Form>
