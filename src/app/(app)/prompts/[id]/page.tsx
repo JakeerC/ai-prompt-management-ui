@@ -3,7 +3,7 @@
 import { use } from "react";
 import { usePrompt, useDeletePrompt } from "@/hooks/use-prompts";
 import { useAuditTrail } from "@/hooks/use-audit";
-import { useApprovalHistory } from "@/hooks/use-approvals";
+import { useApprovalHistory, useSubmitForReview } from "@/hooks/use-approvals";
 import { useVersionHistory } from "@/hooks/use-versions";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { ImpactBadge } from "@/components/shared/impact-badge";
@@ -18,7 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow, format } from "date-fns";
-import { Edit2, Trash2, GitMerge, FileText, Activity, ShieldAlert, CheckCircle2 } from "lucide-react";
+import { Edit2, Trash2, GitMerge, FileText, Activity, ShieldAlert, CheckCircle2, Send } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -33,6 +33,7 @@ export default function PromptDetailsPage({ params }: { params: Promise<{ id: st
   const { data: approvals, isLoading: loadingApprovals } = useApprovalHistory(id);
   const { data: audits, isLoading: loadingAudits } = useAuditTrail(id, { size: 10 });
   const deletePrompt = useDeletePrompt();
+  const submitForReview = useSubmitForReview();
 
   if (loadingPrompt) {
     return (
@@ -68,6 +69,15 @@ export default function PromptDetailsPage({ params }: { params: Promise<{ id: st
     }
   };
 
+  const handleSubmitForReview = async () => {
+    try {
+      await submitForReview.mutateAsync({ promptId: id });
+      toast.success("Prompt submitted for review successfully");
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : "Failed to submit prompt for review");
+    }
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row justify-between gap-4 items-start md:items-center">
@@ -84,6 +94,19 @@ export default function PromptDetailsPage({ params }: { params: Promise<{ id: st
         </div>
         
         <div className="flex items-center gap-2">
+          {prompt.status === "DRAFT" && (
+            <RequireRole role="AUTHOR">
+              <Button 
+                variant="default"
+                onClick={handleSubmitForReview}
+                disabled={submitForReview.isPending}
+                className="bg-primary text-primary-foreground shadow hover:bg-primary/90"
+              >
+                <Send className="w-4 h-4 mr-2" />
+                {submitForReview.isPending ? "Submitting..." : "Submit for Review"}
+              </Button>
+            </RequireRole>
+          )}
           <RequireRole role="AUTHOR">
             <Button asChild variant="outline" className="glass">
               <Link href={`/prompts/${id}/edit`}>

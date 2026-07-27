@@ -150,7 +150,7 @@ export function CreatePromptForm() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Business Impact</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                         <FormControl>
                           <SelectTrigger className="bg-background/50">
                             <SelectValue placeholder="Select impact level" />
@@ -177,7 +177,7 @@ export function CreatePromptForm() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Category</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                         <FormControl>
                           <SelectTrigger className="bg-background/50">
                             <SelectValue placeholder="Select a category" />
