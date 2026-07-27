@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { MdxEditor } from "@/components/shared/mdx-editor";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Sparkles, TerminalSquare, LayoutGrid } from "lucide-react";
 import type { CreatePromptRequest } from "@/types/prompt";
@@ -149,10 +150,9 @@ export function CreatePromptForm() {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Textarea 
-                          placeholder="You are a helpful assistant. Extract the following entities from the text: {{entities}}..." 
-                          className="min-h-[300px] font-mono text-sm leading-relaxed bg-background/50 resize-y" 
-                          {...field} 
+                        <MdxEditor 
+                          markdown={field.value || ""} 
+                          onChange={field.onChange} 
                         />
                       </FormControl>
                       <FormMessage />

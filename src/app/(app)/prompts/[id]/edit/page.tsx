@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect } from "react";
+import { use } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { MdxEditor } from "@/components/shared/mdx-editor";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sparkles, TerminalSquare, LayoutGrid } from "lucide-react";
 import type { UpdatePromptRequest } from "@/types/prompt";
@@ -52,6 +53,14 @@ export default function EditPromptPage({ params }: { params: Promise<{ id: strin
   
   const form = useForm<PromptFormValues>({
     resolver: zodResolver(promptSchema),
+    values: prompt ? {
+      name: prompt.name,
+      description: prompt.description || "",
+      content: prompt.content,
+      businessImpact: prompt.businessImpact,
+      categoryId: prompt.category?.id || "",
+      modelHint: prompt.modelHint || "",
+    } : undefined,
     defaultValues: {
       name: "",
       description: "",
@@ -61,19 +70,6 @@ export default function EditPromptPage({ params }: { params: Promise<{ id: strin
       modelHint: "",
     },
   });
-
-  useEffect(() => {
-    if (prompt) {
-      form.reset({
-        name: prompt.name,
-        description: prompt.description || "",
-        content: prompt.content,
-        businessImpact: prompt.businessImpact,
-        categoryId: prompt.category?.id || "",
-        modelHint: prompt.modelHint || "",
-      });
-    }
-  }, [prompt, form]);
 
   if (loadingPrompt) {
     return (
@@ -183,10 +179,9 @@ export default function EditPromptPage({ params }: { params: Promise<{ id: strin
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Textarea 
-                            placeholder="You are a helpful assistant..." 
-                            className="min-h-[400px] font-mono text-sm leading-relaxed bg-background/50 resize-y" 
-                            {...field} 
+                          <MdxEditor 
+                            markdown={prompt.content} 
+                            onChange={field.onChange} 
                           />
                         </FormControl>
                         <FormMessage />
