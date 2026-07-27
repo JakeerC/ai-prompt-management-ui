@@ -215,11 +215,19 @@ export default function EditPromptPage({ params }: { params: Promise<{ id: strin
                           </FormControl>
                           <SelectContent>
                             <SelectItem value="">None</SelectItem>
-                            {categories?.map((cat) => (
-                              <SelectItem key={cat.id} value={cat.id}>
-                                {cat.name}
-                              </SelectItem>
-                            ))}
+                            {categories ? (
+                              categories.map((cat) => (
+                                <SelectItem key={cat.id} value={cat.id}>
+                                  {cat.name}
+                                </SelectItem>
+                              ))
+                            ) : (
+                              prompt?.category && (
+                                <SelectItem value={prompt.category.id}>
+                                  {prompt.category.name}
+                                </SelectItem>
+                              )
+                            )}
                           </SelectContent>
                         </Select>
                         <FormMessage />
