@@ -94,19 +94,18 @@ export default function PromptDetailsPage({ params }: { params: Promise<{ id: st
         </div>
         
         <div className="flex items-center gap-2">
-          {prompt.status === "DRAFT" && (
-            <RequireRole role="AUTHOR">
-              <Button 
-                variant="default"
-                onClick={handleSubmitForReview}
-                disabled={submitForReview.isPending}
-                className="bg-primary text-primary-foreground shadow hover:bg-primary/90"
-              >
-                <Send className="w-4 h-4 mr-2" />
-                {submitForReview.isPending ? "Submitting..." : "Submit for Review"}
-              </Button>
-            </RequireRole>
-          )}
+          <RequireRole role="AUTHOR">
+            <Button 
+              variant="default"
+              onClick={handleSubmitForReview}
+              disabled={submitForReview.isPending || prompt.status !== "DRAFT"}
+              className="bg-primary text-primary-foreground shadow hover:bg-primary/90"
+              title={prompt.status !== "DRAFT" ? `Cannot submit (Status is ${prompt.status})` : ""}
+            >
+              <Send className="w-4 h-4 mr-2" />
+              {submitForReview.isPending ? "Submitting..." : "Submit for Review"}
+            </Button>
+          </RequireRole>
           <RequireRole role="AUTHOR">
             <Button asChild variant="outline" className="glass">
               <Link href={`/prompts/${id}/edit`}>
