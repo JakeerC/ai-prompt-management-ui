@@ -8,9 +8,28 @@ import {
   thematicBreakPlugin,
   markdownShortcutPlugin,
   toolbarPlugin,
+  linkPlugin,
+  linkDialogPlugin,
+  imagePlugin,
+  tablePlugin,
+  codeBlockPlugin,
+  codeMirrorPlugin,
+  diffSourcePlugin,
+  frontmatterPlugin,
+  // Toolbar components
   UndoRedo,
   BoldItalicUnderlineToggles,
   BlockTypeSelect,
+  CreateLink,
+  InsertImage,
+  InsertTable,
+  InsertThematicBreak,
+  InsertCodeBlock,
+  ListsToggle,
+  CodeToggle,
+  DiffSourceToggleWrapper,
+  Separator,
+  InsertFrontmatter,
   type MDXEditorMethods,
   type MDXEditorProps
 } from "@mdxeditor/editor";
@@ -32,16 +51,36 @@ export default function MdxEditorCore({ editorRef, readOnly, ...props }: EditorP
           quotePlugin(),
           thematicBreakPlugin(),
           markdownShortcutPlugin(),
+          linkPlugin(),
+          linkDialogPlugin(),
+          imagePlugin(),
+          tablePlugin(),
+          codeBlockPlugin(),
+          codeMirrorPlugin({ codeBlockLanguages: { js: 'JavaScript', css: 'CSS', txt: 'text', tsx: 'TypeScript' } }),
+          diffSourcePlugin({ viewMode: 'rich-text', diffMarkdown: '' }),
+          frontmatterPlugin(),
           ...(readOnly ? [] : [
             toolbarPlugin({
               toolbarContents: () => (
-                <div className="flex items-center gap-1 w-full bg-muted/50 p-1 border-b border-border/50">
-                  <UndoRedo />
-                  <div className="w-px h-4 bg-border mx-1" />
-                  <BoldItalicUnderlineToggles />
-                  <div className="w-px h-4 bg-border mx-1" />
-                  <BlockTypeSelect />
-                </div>
+                <DiffSourceToggleWrapper>
+                  <div className="flex flex-wrap items-center gap-1 w-full p-1">
+                    <UndoRedo />
+                    <Separator />
+                    <BoldItalicUnderlineToggles />
+                    <CodeToggle />
+                    <Separator />
+                    <ListsToggle />
+                    <Separator />
+                    <BlockTypeSelect />
+                    <Separator />
+                    <CreateLink />
+                    <InsertImage />
+                    <InsertTable />
+                    <InsertThematicBreak />
+                    <InsertCodeBlock />
+                    <InsertFrontmatter />
+                  </div>
+                </DiffSourceToggleWrapper>
               )
             })
           ])
