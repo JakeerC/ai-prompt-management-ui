@@ -5,12 +5,14 @@ import { usePrompt, useDeletePrompt } from "@/hooks/use-prompts";
 import { useAuditTrail } from "@/hooks/use-audit";
 import { useApprovalHistory, useSubmitForReview } from "@/hooks/use-approvals";
 import { useVersionHistory } from "@/hooks/use-versions";
+import { useUsers } from "@/hooks/use-users";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { ImpactBadge } from "@/components/shared/impact-badge";
 import { ApprovalBadge } from "@/components/shared/approval-badge";
 import { DataTable } from "@/components/shared/data-table";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { RequireRole } from "@/components/shared/require-role";
+import { ApprovalActions } from "@/components/shared/approval-actions";
 import { Button } from "@/components/ui/button";
 import { MdxEditor } from "@/components/shared/mdx-editor";
 import { Badge } from "@/components/ui/badge";
@@ -32,8 +34,15 @@ export default function PromptDetailsPage({ params }: { params: Promise<{ id: st
   const { data: versions, isLoading: loadingVersions } = useVersionHistory(id);
   const { data: approvals, isLoading: loadingApprovals } = useApprovalHistory(id);
   const { data: audits, isLoading: loadingAudits } = useAuditTrail(id, { size: 10 });
+  const { data: usersData } = useUsers(1, 1000);
   const deletePrompt = useDeletePrompt();
   const submitForReview = useSubmitForReview();
+
+  const getUserEmail = (userId: string | undefined | null) => {
+    if (!userId) return "-";
+    const user = usersData?.users.find((u) => u.id === userId);
+    return user ? user.email : userId;
+  };
 
   if (loadingPrompt) {
     return (
@@ -116,6 +125,9 @@ export default function PromptDetailsPage({ params }: { params: Promise<{ id: st
           </RequireRole>
           
           <RequireRole role="ADMIN">
+            {prompt.status === "IN_REVIEW" && (
+              <ApprovalActions promptId={prompt.id} />
+            )}
             <ConfirmDialog
               title="Delete Prompt?"
               description="Are you sure you want to permanently delete this prompt? This action cannot be undone."
@@ -216,7 +228,7 @@ export default function PromptDetailsPage({ params }: { params: Promise<{ id: st
                 columns={[
                   { header: "Level", cell: (a) => `Level ${a.level}` },
                   { header: "Status", cell: (a) => <ApprovalBadge status={a.approvalStatus} /> },
-                  { header: "Reviewer", accessorKey: "reviewerId" },
+                  { header: "Reviewer", cell: (a) => getUserEmail(a.reviewerId) },
                   { header: "Comments", accessorKey: "comments" },
                   { header: "Date", cell: (a) => a.reviewedAt ? format(new Date(a.reviewedAt), "MMM d, yyyy h:mm a") : "-" },
                 ]}
@@ -238,7 +250,7 @@ export default function PromptDetailsPage({ params }: { params: Promise<{ id: st
                 data={audits?.content || []}
                 columns={[
                   { header: "Action", cell: (a) => <span className="font-medium">{AUDIT_ACTION_LABELS[a.action]}</span> },
-                  { header: "Actor", cell: (a) => `${a.actorId} (${a.actorRole})` },
+                  { header: "Actor", cell: (a) => `${getUserEmail(a.actorId)} (${a.actorRole})` },
                   { 
                     header: "Status Change", 
                     cell: (a) => a.fromStatus && a.toStatus ? (

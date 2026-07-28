@@ -2,9 +2,9 @@
 
 import { useAuth } from "@/contexts/auth-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
+import { FieldControl } from "@/components/ui/field-control";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -71,55 +71,32 @@ export default function ProfilePage() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FormField
+              <FieldControl
                 control={form.control}
                 name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input placeholder="johndoe" {...field} className="bg-background/50" />
-                    </FormControl>
-                    <FormDescription>
-                      This is your public display name. It can be your real name or a pseudonym.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Username"
+                type="input"
+                placeholder="johndoe"
+                description="This is your public display name. It can be your real name or a pseudonym."
               />
               
-              <FormField
+              <FieldControl
                 control={form.control}
                 name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="m@example.com" {...field} className="bg-background/50" disabled />
-                    </FormControl>
-                    <FormDescription>
-                      Your verified email address used for login.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Email"
+                type="input"
+                placeholder="m@example.com"
+                description="Your verified email address used for login."
+                disabled
               />
               
-              <FormField
+              <FieldControl
                 control={form.control}
                 name="bio"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Bio</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Tell us a little bit about yourself" {...field} className="bg-background/50" />
-                    </FormControl>
-                    <FormDescription>
-                      A brief description of your role or responsibilities.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Bio"
+                type="input"
+                placeholder="Tell us a little bit about yourself"
+                description="A brief description of your role or responsibilities."
               />
               <Button type="submit" className="bg-gradient-to-r from-primary to-accent border-0 text-white shadow-md">
                 Update profile
