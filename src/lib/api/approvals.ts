@@ -1,5 +1,5 @@
 import { apiClient } from "./client";
-import type { PromptApproval, ApprovePromptRequest, RejectPromptRequest } from "@/types/approval";
+import type { PromptApproval, ApprovePromptRequest, RejectPromptRequest, AssignReviewerRequest } from "@/types/approval";
 
 export const approvalsApi = {
   submit(promptId: string, changeSummary?: string): Promise<void> {
@@ -12,6 +12,10 @@ export const approvalsApi = {
 
   reject(promptId: string, data: RejectPromptRequest): Promise<void> {
     return apiClient.post(`/api/v1/prompts/${promptId}/approvals/reject`, data);
+  },
+
+  assign(promptId: string, data: AssignReviewerRequest): Promise<void> {
+    return apiClient.post(`/api/v1/prompts/${promptId}/approvals/assign`, data);
   },
 
   getHistory(promptId: string): Promise<PromptApproval[]> {

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { approvalsApi } from "@/lib/api/approvals";
-import type { ApprovePromptRequest, RejectPromptRequest } from "@/types/approval";
+import type { ApprovePromptRequest, RejectPromptRequest, AssignReviewerRequest } from "@/types/approval";
 
 export function useApprovalHistory(promptId: string) {
   return useQuery({
@@ -41,6 +41,19 @@ export function useReject() {
   return useMutation({
     mutationFn: ({ promptId, data }: { promptId: string; data: RejectPromptRequest }) =>
       approvalsApi.reject(promptId, data),
+    onSuccess: (_, { promptId }) => {
+      queryClient.invalidateQueries({ queryKey: ["prompt", promptId] });
+      queryClient.invalidateQueries({ queryKey: ["approvals", promptId] });
+      queryClient.invalidateQueries({ queryKey: ["prompts"] });
+    },
+  });
+}
+
+export function useAssignReviewer() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ promptId, data }: { promptId: string; data: AssignReviewerRequest }) =>
+      approvalsApi.assign(promptId, data),
     onSuccess: (_, { promptId }) => {
       queryClient.invalidateQueries({ queryKey: ["prompt", promptId] });
       queryClient.invalidateQueries({ queryKey: ["approvals", promptId] });

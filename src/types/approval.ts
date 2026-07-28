@@ -26,6 +26,10 @@ export interface RejectPromptRequest {
   comments: string;
 }
 
+export interface AssignReviewerRequest {
+  reviewerId: string;
+}
+
 export interface SubmitForReviewRequest {
   changeSummary?: string;
 }

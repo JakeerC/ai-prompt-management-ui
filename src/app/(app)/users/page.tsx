@@ -76,7 +76,9 @@ function ChangeRoleDialog({
               onValueChange={(val) => setSelectedRole(val as UserRole)}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select role" />
+                <SelectValue placeholder="Select role">
+                  {selectedRole ? ROLE_LABELS[selectedRole as UserRole] || selectedRole : undefined}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {Object.entries(ROLE_LABELS).map(([roleKey, label]) => (

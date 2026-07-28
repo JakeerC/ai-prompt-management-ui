@@ -9,24 +9,14 @@ import { useCategories } from "@/hooks/use-categories";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { FieldControl } from "@/components/ui/field-control";
 import { MdxEditor } from "@/components/shared/mdx-editor";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Sparkles, TerminalSquare, LayoutGrid } from "lucide-react";
@@ -96,39 +86,20 @@ export function CreatePromptForm() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <FormField
+                <FieldControl
                   control={form.control}
                   name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g. Extract Entities JSON" {...field} className="bg-background/50" />
-                      </FormControl>
-                      <FormDescription>
-                        A clear, descriptive name for this prompt.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Name"
+                  type="input"
+                  placeholder="e.g. Extract Entities JSON"
+                  description="A clear, descriptive name for this prompt."
                 />
-                <FormField
+                <FieldControl
                   control={form.control}
                   name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Description</FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          placeholder="What does this prompt do?" 
-                          className="resize-none bg-background/50" 
-                          rows={3}
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Description"
+                  type="textarea"
+                  placeholder="What does this prompt do?"
                 />
               </CardContent>
             </Card>
@@ -144,74 +115,40 @@ export function CreatePromptForm() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                <FormField
+                <FieldControl
                   control={form.control}
                   name="businessImpact"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Business Impact</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger className="bg-background/50">
-                            <SelectValue placeholder="Select impact level" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="LOW">Low</SelectItem>
-                          <SelectItem value="MEDIUM">Medium</SelectItem>
-                          <SelectItem value="HIGH">High</SelectItem>
-                          <SelectItem value="CRITICAL">Critical</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormDescription>
-                        Determines the required approval level.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Business Impact"
+                  type="select"
+                  placeholder="Select impact level"
+                  options={[
+                    { label: "Low", value: "LOW" },
+                    { label: "Medium", value: "MEDIUM" },
+                    { label: "High", value: "HIGH" },
+                    { label: "Critical", value: "CRITICAL" }
+                  ]}
+                  description="Determines the required approval level."
                 />
 
-                <FormField
+                <FieldControl
                   control={form.control}
                   name="categoryId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Category</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger className="bg-background/50">
-                            <SelectValue placeholder="Select a category" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="">None</SelectItem>
-                          {categories?.map((cat) => (
-                            <SelectItem key={cat.id} value={cat.id}>
-                              {cat.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Category"
+                  type="select"
+                  placeholder="Select a category"
+                  options={[
+                    { label: "None", value: "" },
+                    ...(categories?.map(cat => ({ label: cat.name, value: cat.id })) || [])
+                  ]}
                 />
                 
-                <FormField
+                <FieldControl
                   control={form.control}
                   name="modelHint"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Model Hint</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g. gpt-4, claude-3" {...field} className="bg-background/50" />
-                      </FormControl>
-                      <FormDescription>
-                        Suggested model family for execution.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Model Hint"
+                  type="input"
+                  placeholder="e.g. gpt-4, claude-3"
+                  description="Suggested model family for execution."
                 />
               </CardContent>
             </Card>
