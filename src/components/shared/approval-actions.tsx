@@ -11,22 +11,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
   useApprove,
   useReject,
-  useAssignReviewer,
 } from "@/hooks/use-approvals";
-import { useUsers } from "@/hooks/use-users";
-import { CheckCircle2, XCircle, UserPlus } from "lucide-react";
+import { CheckCircle2, XCircle } from "lucide-react";
 import { toast } from "sonner";
 
 interface ApprovalActionsProps {
@@ -40,21 +31,11 @@ export function ApprovalActions({
 }: ApprovalActionsProps) {
   const [approveComments, setApproveComments] = useState("");
   const [rejectComments, setRejectComments] = useState("");
-  const [assigneeId, setAssigneeId] = useState("");
   const [isApproveOpen, setIsApproveOpen] = useState(false);
   const [isRejectOpen, setIsRejectOpen] = useState(false);
-  const [isAssignOpen, setIsAssignOpen] = useState(false);
 
   const approveMutation = useApprove();
   const rejectMutation = useReject();
-  const assignMutation = useAssignReviewer();
-
-  const { data: usersData, isLoading: loadingUsers } = useUsers();
-  // Filter only REVIEWERs and ADMINs for assignment
-  const availableReviewers =
-    usersData?.users.filter(
-      (u) => u.role === "REVIEWER" || u.role === "ADMIN",
-    ) || [];
 
   const handleApprove = async () => {
     try {
@@ -87,25 +68,6 @@ export function ApprovalActions({
     } catch (error: unknown) {
       const err = error as { message?: string };
       toast.error(err?.message || "Failed to reject prompt");
-    }
-  };
-
-  const handleAssign = async () => {
-    if (!assigneeId) {
-      toast.error("Please select a reviewer");
-      return;
-    }
-    try {
-      await assignMutation.mutateAsync({
-        promptId,
-        data: { reviewerId: assigneeId },
-      });
-      toast.success("Reviewer assigned successfully");
-      setIsAssignOpen(false);
-      setAssigneeId("");
-    } catch (error: unknown) {
-      const err = error as { message?: string };
-      toast.error(err?.message || "Failed to assign reviewer");
     }
   };
 
@@ -206,76 +168,6 @@ export function ApprovalActions({
               disabled={rejectMutation.isPending || !rejectComments.trim()}
             >
               {rejectMutation.isPending ? "Rejecting..." : "Reject"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={isAssignOpen} onOpenChange={setIsAssignOpen}>
-        <DialogTrigger
-          render={
-            <Button
-              variant="outline"
-              className="text-blue-600 border-blue-600/20 hover:bg-blue-600/10 glass"
-            >
-              <UserPlus className="w-4 h-4 mr-2" />
-              Assign Reviewer
-            </Button>
-          }
-        />
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Assign Reviewer</DialogTitle>
-            <DialogDescription>
-              Assign a specific reviewer to evaluate this prompt.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="assignee">Reviewer</Label>
-              <Select
-                value={assigneeId}
-                onValueChange={(value: string | null) =>
-                  setAssigneeId(value || "")
-                }
-                disabled={loadingUsers}
-              >
-                <SelectTrigger id="assignee">
-                  <SelectValue
-                    placeholder={
-                      loadingUsers ? "Loading users..." : "Select a reviewer"
-                    }
-                  >
-                    {assigneeId &&
-                    availableReviewers.find((u) => u.id === assigneeId)
-                      ? `${availableReviewers.find((u) => u.id === assigneeId)?.email} (${availableReviewers.find((u) => u.id === assigneeId)?.role})`
-                      : undefined}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  {availableReviewers.map((user) => (
-                    <SelectItem key={user.id} value={user.id}>
-                      {user.email} ({user.role})
-                    </SelectItem>
-                  ))}
-                  {availableReviewers.length === 0 && !loadingUsers && (
-                    <SelectItem value="none" disabled>
-                      No reviewers available
-                    </SelectItem>
-                  )}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsAssignOpen(false)}>
-              Cancel
-            </Button>
-            <Button
-              onClick={handleAssign}
-              disabled={assignMutation.isPending || !assigneeId}
-            >
-              {assignMutation.isPending ? "Assigning..." : "Assign"}
             </Button>
           </DialogFooter>
         </DialogContent>

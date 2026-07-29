@@ -148,14 +148,16 @@ export default function PromptDetailsPage({
               </Button>
             </RequireRole>
           )}
-          <RequireRole role="AUTHOR">
-            <Button asChild variant="outline" className="glass">
-              <Link href={`/prompts/${id}/edit`}>
-                <Edit2 className="w-4 h-4 mr-2" />
-                Edit Prompt
-              </Link>
-            </Button>
-          </RequireRole>
+          {prompt.status !== "IN_REVIEW" && (
+            <RequireRole role="AUTHOR">
+              <Button asChild variant="outline" className="glass">
+                <Link href={`/prompts/${id}/edit`}>
+                  <Edit2 className="w-4 h-4 mr-2" />
+                  Edit Prompt
+                </Link>
+              </Button>
+            </RequireRole>
+          )}
 
           <RequireRole role="ADMIN">
             {prompt.status === "IN_REVIEW" && (
