@@ -35,11 +35,15 @@ import {
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
 
+import { useTheme } from "next-themes";
+
 interface EditorProps extends Omit<MDXEditorProps, 'ref'> {
   editorRef?: React.Ref<MDXEditorMethods>;
 }
 
 export default function MdxEditorCore({ editorRef, readOnly, ...props }: EditorProps) {
+  const { resolvedTheme } = useTheme();
+
   return (
     <div className={`border rounded-md bg-background/50 overflow-hidden ${readOnly ? "border-transparent" : "border-input"}`}>
       <MDXEditor
@@ -86,7 +90,7 @@ export default function MdxEditorCore({ editorRef, readOnly, ...props }: EditorP
           ])
         ]}
         {...props}
-        className="min-h-[300px] prose dark:prose-invert max-w-none text-foreground"
+        className={`min-h-[300px] prose dark:prose-invert max-w-none text-foreground ${resolvedTheme === 'dark' ? 'dark-theme dark-editor' : ''}`}
       />
     </div>
   );
